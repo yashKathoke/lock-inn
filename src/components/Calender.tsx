@@ -22,17 +22,20 @@ function generateCalendarMatrix(year: number, month: number): (Date | null)[][] 
   return matrix;
 }
 
-function dayState(day: Date | null, now: Date, targetDate: Date) {
+function dayState(day: Date | null, now: Date, targetDate: Date, startDate?: Date) {
   if (!day) return "empty";
   const d = new Date(day.getFullYear(), day.getMonth(), day.getDate());
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const start = startDate ? new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate()) : null;
+
+  if (start && d >= start && d < today) return "betweenStartAndToday";
   if (d < today) return "past";
   if (d.getTime() === today.getTime()) return "today";
   if (d > targetDate) return "beyond";
   return "future";
 }
 
-export function Calendar({ now, targetDate }: { now: Date; targetDate: Date, startDate?: Date }) {
+export function Calendar({ now, targetDate, startDate }: { now: Date; targetDate: Date; startDate?: Date }) {
   const [displayMonth, setDisplayMonth] = useState({ year: now.getFullYear(), month: now.getMonth() });
 
   useEffect(() => {
@@ -93,7 +96,7 @@ export function Calendar({ now, targetDate }: { now: Date; targetDate: Date, sta
           {matrix.map((week, i) => (
             <div key={i} className="grid grid-cols-7 gap-1">
               {week.map((d, j) => {
-                const state = dayState(d, now, targetDate);
+                const state = dayState(d, now, targetDate, startDate);
                 const base =
                   "w-8 h-8 flex items-center justify-center rounded-full text-xs transition-all duration-150 select-none";
                 let classes = "";
@@ -103,13 +106,16 @@ export function Calendar({ now, targetDate }: { now: Date; targetDate: Date, sta
                     classes = "bg-green-500 text-white font-semibold ring-2 ring-green-400";
                     break;
                   case "past":
-                    classes = "opacity-40 line-through decoration-red-400/70 text-gray-500";
+                    classes = "opacity-40 text-gray-500";
                     break;
                   case "beyond":
                     classes = "text-gray-400 opacity-70";
                     break;
                   case "future":
                     classes = "hover:bg-indigo-50 dark:hover:bg-gray-900";
+                    break;
+                  case "betweenStartAndToday":
+                    classes = "line-through decoration-red-400/70 text-gray-500";
                     break;
                   default:
                     classes = "";

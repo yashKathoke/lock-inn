@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { Calendar } from "./components/Calender";
+import FloatingCalendar from "./components/FloatingCal";
 
 // Constants
 const LS_KEY = "zen:targetDate";
@@ -165,7 +165,7 @@ function SearchBar({ onSearchSubmit }: { onSearchSubmit: (e: any) => void }) {
   );
 }
 
-function Footer({ clearGoal }: { clearGoal: () => void }) {
+function Footer() {
   return (
     <footer className="mt-10 text-center text-xs opacity-70">
       <div className="flex items-center justify-center gap-4">
@@ -173,16 +173,23 @@ function Footer({ clearGoal }: { clearGoal: () => void }) {
           href="#"
           onClick={(e) => {
             e.preventDefault();
-            const u = prompt("Your blog or writing URL (optional)");
-            if (u) window.open(u, "_blank");
+            window.open("https://leetcode.com/problemset/", "_blank");
           }}
           className="hover:underline"
         >
-          Link to writing
+          Leetcode
         </a>
         <span>•</span>
-        <button onClick={clearGoal} className="hover:underline">
-          Reset
+        <button onClick={()=> {
+          window.open("https://medium.com/", "_blank")
+        }} className="hover:underline">
+          Medium
+        </button>
+        <span>•</span>
+        <button onClick={()=> {
+          window.open("https://github.com/", "_blank")
+        }} className="hover:underline">
+          Github
         </button>
       </div>
       <div className="mt-3">© {new Date().getFullYear()} Yash Kathoke</div>
@@ -193,7 +200,7 @@ function Footer({ clearGoal }: { clearGoal: () => void }) {
 // Main App
 export default function ZenLockInApp() {
   const [targetDate, setTargetDate] = useState(() => parseSaved());
-  const [startDate, setStartDate] = useState(() => {
+  const [startDate] = useState(() => {
     const savedStartDate = localStorage.getItem(LS_START_DATE);
     return savedStartDate ? new Date(savedStartDate) : new Date();
   });
@@ -207,13 +214,39 @@ export default function ZenLockInApp() {
   );
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const quotes = [
-    "Discipline is choosing what you want most over what you want now.",
-    "Focus is the art of saying no to distractions.",
-    "Small daily improvements are the key to staggering long-term results.",
-    "Build in silence. Let your results make the noise.",
-    "The habit you keep determines the life you live.",
-  ];
+const quotes = [
+  "Consistency beats intensity every time.",
+  "Progress thrives on patience and repetition.",
+  "Your future depends on what you repeat today.",
+  "Do it especially when you don’t feel like it.",
+  "Discomfort is the price of growth.",
+  "Direction is more important than speed.",
+  "Your habits shape your destiny quietly.",
+  "Discipline turns potential into performance.",
+  "Success is built one boring day at a time.",
+  "Momentum is born from showing up daily.",
+  "Excellence hides behind routine.",
+  "The easiest excuses create the hardest regrets.",
+  "Hard work compounds faster than luck.",
+  "Be obsessed with consistency, not motivation.",
+  "Every effort deposits into your future self.",
+  "What you do after failing defines you most.",
+  "Your goals need a schedule, not motivation.",
+  "Improvement begins where comfort ends.",
+  "The real flex is mastering your routine.",
+  "No shortcuts, just repetitions that matter.",
+  "Ordinary efforts repeated become extraordinary results.",
+  "Train your focus like a muscle.",
+  "The grind is the bridge between ideas and impact.",
+  "Self-control is a superpower few practice.",
+  "You become strong by keeping promises to yourself.",
+  "Discipline compounds like interest.",
+  "One good decision repeated daily changes everything.",
+  "Show up even when it feels pointless.",
+  "The standard you keep when no one’s watching defines you.",
+  "Effort beats talent when talent skips days.",
+];
+
   const quoteIndex =
     Math.abs(Math.floor(Date.now() / (1000 * 60 * 60 * 24))) % quotes.length;
 
@@ -264,12 +297,7 @@ export default function ZenLockInApp() {
     setTempDate(toInputLocalDatetime(targetDate));
   };
 
-  const clearGoal = () => {
-    localStorage.removeItem(LS_KEY);
-    localStorage.removeItem(LS_GOAL_TEXT);
-    setTargetDate(getDefaultTarget());
-    setGoalText("DSA + Open Source + Writing");
-  };
+
 
   const onSearchSubmit = (e: any) => {
     e.preventDefault();
@@ -289,11 +317,9 @@ export default function ZenLockInApp() {
         'Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial',
       }}
     >
-      <div
-      className="fixed top-22 right-15 p-4 rounded-lg shadow-lg "
-      style={{ zIndex: 10 }}
-      >
-      <Calendar now={now} targetDate={targetDate} startDate={startDate} />
+      <div>
+        <FloatingCalendar now={now} targetDate={targetDate} startDate={startDate} />
+
       </div>
 
       <div className="max-w-3xl w-full px-6 py-12">
@@ -323,7 +349,7 @@ export default function ZenLockInApp() {
         </div>
         </main>
 
-        <Footer clearGoal={clearGoal} />
+        <Footer />
       </div>
       </div>
 
