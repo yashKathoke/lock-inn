@@ -187,6 +187,12 @@ function Footer() {
         </button>
         <span>•</span>
         <button onClick={()=> {
+          window.open("https://www.notion.so/", "_blank")
+        }} className="hover:underline">
+          Notion
+        </button>
+        <span>•</span>
+        <button onClick={()=> {
           window.open("https://github.com/", "_blank")
         }} className="hover:underline">
           Github
